@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Menjodohkan - LHO Kelapa</title>
+  <style>
+    body {
+      background-color: #ccffcc; /* hijau muda */
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+    .column {
+      width: 45%;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px gray;
+    }
+    .draggable {
+      padding: 8px;
+      margin: 5px 0;
+      background: #e0f7fa;
+      border: 1px solid #00796b;
+      border-radius: 5px;
+      cursor: grab;
+    }
+    .dropzone {
+      border: 2px dashed #00796b;
+      border-radius: 5px;
+      padding: 15px;
+      min-height: 50px;
+      margin-top: 10px;
+      background: #ffffff;
+    }
+    .dropzone.over {
+      background: #c8e6c9;
+    }
+    button {
+      margin: 15px 10px;
+      padding: 10px 20px;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #388e3c;
+    }
+  </style>
+</head>
+<body>
+  <h2>Soal Bahasa Indonesia Kelas X - Teks Laporan Hasil Observasi</h2>
+  <p>Tonton video berikut terlebih dahulu:</p>
+  <video width="600" controls>
+    <source src="https://ulmanis211-cmd.github.io/BAHASA-INDONESIA/Teks%20Laporan%20Hasil%20Observasi%20Pohon%20Kelapa.mp4" type="video/mp4">
+    Browser Anda tidak mendukung video.
+  </video>
+
+  <p><b>Petunjuk:</b> Seret pernyataan dari Kolom A ke kotak jawaban yang sesuai di Kolom B.</p>
+
+  <div class="container">
+    <!-- Kolom A -->
+    <div class="column" id="colA">
+      <h3>Kolom A (Pernyataan)</h3>
+      <div class="draggable" draggable="true" id="a1">Kelapa termasuk dalam suku palem-paleman dan tumbuh di daerah tropis</div>
+      <div class="draggable" draggable="true" id="a2">Kelapa terdiri dari 4 bagian utama, yaitu buah, daun, batang, dan akar</div>
+      <div class="draggable" draggable="true" id="a3">Kelapa dikenal dengan tumbuhan serbaguna karena setiap bagiannya dapat dimanfaatkan. Buah kelapa memiliki air yang kaya elektrolit, dagingnya dapat diubah menjadi santan</div>
+    </div>
+
+    <!-- Kolom B -->
+    <div class="column" id="colB">
+      <h3>Kolom B (Struktur Teks)</h3>
+      <p><b>Definisi umum</b></p>
+      <div class="dropzone" data-answer="a1"></div>
+
+      <p><b>Deskripsi bagian</b></p>
+      <div class="dropzone" data-answer="a2"></div>
+
+      <p><b>Deskripsi manfaat</b></p>
+      <div class="dropzone" data-answer="a3"></div>
+    </div>
+  </div>
+
+  <div style="text-align:center;">
+    <button onclick="cekJawaban()">Hasil</button>
+    <button onclick="resetSoal()">Reset</button>
+  </div>
+
+  <p id="feedback" style="font-weight:bold; text-align:center;"></p>
+
+  <script>
+    const draggables = document.querySelectorAll('.draggable');
+    const dropzones = document.querySelectorAll('.dropzone');
+
+    draggables.forEach(item => {
+      item.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', item.id);
+      });
+    });
+
+    dropzones.forEach(zone => {
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.classList.add('over');
+      });
+      zone.addEventListener('dragleave', e => {
+        zone.classList.remove('over');
+      });
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('over');
+        const data = e.dataTransfer.getData('text/plain');
+        const dragged = document.getElementById(data);
+        if (dragged) {
+          zone.innerHTML = "";
+          zone.appendChild(dragged);
+        }
+      });
+    });
+
+    function cekJawaban() {
+      let benar = true;
+      dropzones.forEach(zone => {
+        if (zone.children.length === 0 || zone.children[0].id !== zone.dataset.answer) {
+          benar = false;
+        }
+      });
+      if (benar) {
+        document.getElementById("feedback").innerText = "Hebat jawaban anda benar!";
+      } else {
+        document.getElementById("feedback").innerText = "Maaf Jawaban Anda Salah, Ulangi lagi.";
+      }
+    }
+
+    function resetSoal() {
+      const colA = document.getElementById("colA");
+      const items = document.querySelectorAll('.draggable');
+      items.forEach(item => {
+        colA.appendChild(item);
+      });
+      dropzones.forEach(zone => zone.innerHTML = "");
+      document.getElementById("feedback").innerText = "";
+    }
+  </script>
+</body>
+</html>
